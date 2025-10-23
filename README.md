@@ -85,6 +85,32 @@ Este é o exemplo mais avançado. Ele implementa um "agendador" cooperativo simp
 -   **O que observar:** O código define diferentes tarefas (piscar LED, ler botão, atualizar tela) e o agendador cuida de executá-las quando for a hora certa. Essa abordagem é a base dos Sistemas Operacionais de Tempo Real (RTOS) e é extremamente poderosa para gerenciar projetos complexos de forma organizada e eficiente.
 -   **Conceito-chave:** Multitarefa cooperativa.
 
+### 5. Sistema com Interrupções de Hardware
+
+-   **Arquivo:** [`interruption.ino`](src/interruption.ino)
+
+Aqui, deixamos de "perguntar" (polling) se algo aconteceu e passamos a ser "avisados" pelo hardware. Este código usa dois tipos de interrupções para controle total.
+
+-   **O que observar:**
+    * **Interrupção de Timer:** O LED pisca com *precisão de hardware* (usando `TIMER1_COMPA_vect`). Não há **nenhum** código no `loop()` para controlar o LED; o timer faz isso em paralelo.
+    * **Interrupção Externa:** O botão (no pino 2) usa `attachInterrupt()` para *forçar* o processador a executar a `isrBotao()` no exato instante em que é pressionado (`FALLING`), garantindo resposta imediata.
+-   **Conceito-chave:** Programação orientada a eventos, ISR (Rotina de Serviço de Interrupção), `volatile`, registradores (`TCCR1A`, `OCR1A`).
+
+---
+
+### 6. Sistema com Sleep Mode e Watchdog Timer
+
+-   **Arquivo:** [`sleepmode.ino`](src/sleepmode.ino)
+
+Este é o exemplo mais avançado, focado em **eficiência energética**. O Arduino é colocado em modo de sono profundo (`SLEEP_MODE_PWR_DOWN`), onde consome quase zero energia.
+
+-   **O que observar:**
+    * O `loop()` agora é um "gerenciador de sono" que apenas coloca o CPU para dormir (`sleep_cpu()`).
+    * **`millis()` para de funcionar!** O sono profundo desliga o Timer0.
+    * **Watchdog Timer (WDT):** Usamos este timer especial de baixo consumo para acordar o CPU a cada 1 segundo, permitindo que o LED pisque e que nosso próprio cronômetro (`g_segundosDeExecucao`) funcione.
+    * **Interrupção Externa (Botão):** É a outra fonte que pode "acordar" o CPU.
+-   **Conceito-chave:** Modos de baixo consumo, `avr/sleep.h`, Watchdog Timer (WDT), `avr/wdt.h`, trade-offs de engenharia (precisão vs. consumo).
+
 ## 🚀 Como Usar
 
 1.  **Clone o repositório:**
