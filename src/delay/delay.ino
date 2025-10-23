@@ -1,8 +1,8 @@
 #include <LiquidCrystal.h>
 
 // --- Configuração do Hardware ---
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-const int pinoBotao = 7;
+LiquidCrystal lcd(12, 11, 6, 5, 4, 3);
+const int pinoBotao = 2;
 const int pinoLed = 8;
 
 // --- Variáveis de Controle do Menu ---
@@ -15,7 +15,7 @@ unsigned long tempoSimulado = 0;
 // --- Função de configuração inicial do sistema ---
 void setup() {
   lcd.begin(16, 2);
-  pinMode(pinoBotao, INPUT);
+  pinMode(pinoBotao, INPUT_PULLUP);
   pinMode(pinoLed, OUTPUT);
   
   exibirMenu();
@@ -41,7 +41,7 @@ void loop() {
 void verificarBotaoEAtualizarTela() {
   // Verifica se o botão foi pressionado
   int estadoBotao = digitalRead(pinoBotao);
-  if (estadoBotao == HIGH) {
+  if (estadoBotao == LOW) {
     // Se sim, avançamos para a próxima tela
     telaAtual++;
     // Se chegamos ao fim, voltamos à primerira tela

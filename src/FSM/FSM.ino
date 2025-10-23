@@ -1,8 +1,8 @@
 #include <LiquidCrystal.h>
 
 // --- Configuração dos Pinos e do LCD ---
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-const int pinoBotao = 7;
+LiquidCrystal lcd(12, 11, 6, 5, 4, 3);
+const int pinoBotao = 2;
 const int pinoLed = 8;
 
 // --- Definição dos Estados da Máquina de Estados ---
@@ -13,7 +13,7 @@ enum Estado {
 };
 
 // --- Variáveis Globais ---
-Estado estadoAtual = MENU_PRINCIPAL; // O sistema começa no estado do menu principal
+Estado estadoAtual = MENU_PRINCIPAL;
 
 // Variáveis para o controle do LED (não-bloqueante)
 unsigned long tempoAnteriorLed = 0;
@@ -23,49 +23,40 @@ int estadoLed = LOW;
 // Variáveis para o controle do botão (debounce)
 unsigned long tempoAnteriorBotao = 0;
 const long intervaloBotao = 50;
-int estadoBotaoAnterior = LOW;
+int estadoBotaoAnterior = HIGH; // começa em HIGH porque há pull-up interno
 
 // Variáveis para a atualização do display (não-bloqueante)
 unsigned long tempoAnteriorDisplay = 0;
 const long intervaloDisplay = 250;
 
 // --- Protótipos das Funções ---
-// Adicionar protótipos também é uma boa prática em C/C++ para evitar erros de ordem.
 void entrarNoEstado(Estado novoEstado);
-void gerenciarLed();
-void verificarBotao();
-void atualizarDisplayMonitoramento();
+void gerenciarLed(unsigned long tempoAtual);
+void verificarBotao(unsigned long tempoAtual);
+void atualizarDisplayMonitoramento(unsigned long tempoAtual);
 
-// --- Função de configuração inicial do sistema ---
+// --- Configuração inicial ---
 void setup() {
   lcd.begin(16, 2);
-  pinMode(pinoBotao, INPUT);
+  pinMode(pinoBotao, INPUT_PULLUP); // usa o pull-up interno
   pinMode(pinoLed, OUTPUT);
   
-  // Ao iniciar, preparamos a entrada no estado inicial
-  entrarNoEstado(estadoAtual); 
+  entrarNoEstado(estadoAtual);
 }
 
-// --- Função principal (loop) ---
+// --- Loop principal ---
 void loop() {
   unsigned long tempoAtual = millis();
-  // --- Tarefas que rodam em PARALELO e INDEPENDENTE do estado atual ---
+
   gerenciarLed(tempoAtual);
   verificarBotao(tempoAtual);
-  
-  // --- Ações que dependem do ESTADO ATUAL ---
-  // Este switch é o coração da nossa Máquina de Estados
+
   switch (estadoAtual) {
     case MENU_PRINCIPAL:
-      // Nenhuma ação contínua é necessária neste estado
       break;
-      
     case STATUS_SISTEMA:
-      // Nenhuma ação contínua é necessária neste estado
       break;
-      
     case MONITORAMENTO:
-      // A única ação contínua é atualizar o tempo no ecrã
       atualizarDisplayMonitoramento(tempoAtual);
       break;
   }
@@ -81,15 +72,11 @@ void gerenciarLed(unsigned long tempoAtual) {
 }
 
 void verificarBotao(unsigned long tempoAtual) {
-  // Verifica se o tempo de debounce passou
   if (tempoAtual - tempoAnteriorBotao >= intervaloBotao) {
     tempoAnteriorBotao = tempoAtual;
     
-    // Verifica se o botão foi pressionado
     int estadoBotaoAtual = digitalRead(pinoBotao);
-    if (estadoBotaoAtual == HIGH && estadoBotaoAnterior == LOW) {
-      // Evento detectado: Botão foi pressionado!
-      // Define a transição para o próximo estado
+    if (estadoBotaoAtual == LOW && estadoBotaoAnterior == HIGH) { // lógica invertida
       Estado proximoEstado;
       switch (estadoAtual) {
         case MENU_PRINCIPAL:
@@ -102,15 +89,12 @@ void verificarBotao(unsigned long tempoAtual) {
           proximoEstado = MENU_PRINCIPAL;
           break;
       }
-      
-      // Atualiza o estado e executa a ação de entrada no novo estado
       estadoAtual = proximoEstado;
       entrarNoEstado(estadoAtual);
     }
     estadoBotaoAnterior = estadoBotaoAtual;
   }
 }
-
 
 void entrarNoEstado(Estado novoEstado) {
   lcd.clear();
@@ -129,7 +113,6 @@ void entrarNoEstado(Estado novoEstado) {
       break;
     case MONITORAMENTO:
       lcd.print("Monitoramento");
-      // A linha de tempo será gerida pela função 'atualizarDisplayMonitoramento()'
       break;
   }
 }

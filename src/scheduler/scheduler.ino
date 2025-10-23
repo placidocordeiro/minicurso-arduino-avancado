@@ -1,8 +1,8 @@
 #include <LiquidCrystal.h>
 
 // --- Configuração dos Pinos e do LCD ---
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-const int pinoBotao = 7;
+LiquidCrystal lcd(12, 11, 6, 5, 4, 3);
+const int pinoBotao = 2;
 const int pinoLed = 8;
 
 // --- Estrutura para agendamento de tarefas ---
@@ -11,6 +11,11 @@ typedef struct {
   unsigned long intervalo;      // Intervalo de execução em milissegundos
   unsigned long ultimaExecucao; // Última vez que a tarefa foi executada
 } Tarefa;
+
+// --- Definição de funções para mitigar erros no escopo do código ---
+void tarefaLed();
+void tarefaBotao();
+void tarefaDisplay();
 
 // --- Variáveis Globais ---
 int telaAtual = 0;
@@ -30,7 +35,7 @@ const int NUM_TAREFAS = sizeof(tarefas) / sizeof(tarefas[0]);
 // --- Função de configuração inicial do sistema ---
 void setup() {
   lcd.begin(16, 2);
-  pinMode(pinoBotao, INPUT);
+  pinMode(pinoBotao, INPUT_PULLUP);
   pinMode(pinoLed, OUTPUT);
   
   // Exibe o menu inicial uma vez ao ligar
@@ -61,7 +66,7 @@ void tarefaBotao() {
   int estadoBotaoAtual = digitalRead(pinoBotao);
   
   // Deteta a borda de subida (momento exato em que o botão é pressionado)
-  if (estadoBotaoAtual == HIGH && estadoBotaoAnterior == LOW) {
+  if (estadoBotaoAtual == LOW && estadoBotaoAnterior == HIGH) {
     telaAtual = (telaAtual + 1) % 3; // Circula entre 0, 1 e 2
     
     // Chamamos a função de exibir o menu diretamente daqui!
