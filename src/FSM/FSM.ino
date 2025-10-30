@@ -76,7 +76,7 @@ void verificarBotao(unsigned long tempoAtual) {
     tempoAnteriorBotao = tempoAtual;
     
     int estadoBotaoAtual = digitalRead(pinoBotao);
-    if (estadoBotaoAtual == LOW && estadoBotaoAnterior == HIGH) { // lógica invertida
+    if (estadoBotaoAtual == LOW && estadoBotaoAnterior == HIGH) {
       Estado proximoEstado;
       switch (estadoAtual) {
         case MENU_PRINCIPAL:

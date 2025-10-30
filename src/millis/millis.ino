@@ -41,7 +41,7 @@ void loop() {
     ultimoDebounce = tempoAtual;
   }
 
-  // se ficou estável por tempoDebounce ms
+  // se ficou estável por tempoDebounce 
   if ((tempoAtual - ultimoDebounce) > tempoDebounce) {
     // se o estado estável mudou
     if (leitura != estadoBotao) {

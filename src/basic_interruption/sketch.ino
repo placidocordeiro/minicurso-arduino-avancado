@@ -45,10 +45,10 @@ void setup() {
 }
 
 void loop() {
-  // 1. O LED do Timer (pino 8) está a piscar sozinho via hardware.
+  // O LED do Timer (pino 8) pisca sozinho via hardware.
   // O loop() não faz NADA para que ele funcione.
 
-  // 2. O loop() apenas processa a flag da interrupção do botão
+  // O loop() apenas processa a flag da interrupção do botão
   if (g_botaoPressionado) {
     g_botaoPressionado = false; // "Baixa" a flag
     

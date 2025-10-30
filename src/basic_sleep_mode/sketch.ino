@@ -63,7 +63,7 @@ void loop() {
     // Nenhuma flag, vamos dormir.
     sei();
     sleep_enable();
-    sleep_cpu();    // ****** DORME AQUI ****** 
-    sleep_disable();  // ****** ACORDA AQUI ****** 
+    sleep_cpu();        // ------ DORME AQUI ------
+    sleep_disable();    // ------ ACORDA AQUI ------
   }
 }

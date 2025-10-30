@@ -70,7 +70,6 @@ void tarefaBotao() {
     telaAtual = (telaAtual + 1) % 3; // Circula entre 0, 1 e 2
     
     // Chamamos a função de exibir o menu diretamente daqui!
-    // Este é o único momento em que o menu precisa ser completamente redesenhado.
     exibirMenu();
   }
   estadoBotaoAnterior = estadoBotaoAtual;

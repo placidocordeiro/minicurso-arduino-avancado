@@ -1,14 +1,14 @@
 #include <LiquidCrystal.h>
-#include <avr/interrupt.h> // Para ISRs
-#include <avr/sleep.h>     // Para os modos de sono
-#include <avr/wdt.h>       // Para o Watchdog Timer
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/wdt.h>
 
-// --- Configuração dos Pinos e do LCD ---
+// Configuração dos pinos e do LCD
 LiquidCrystal lcd(12, 11, 6, 5, 4, 3);
-const int pinoBotao = 2; // Botão DEVE estar no pino 2
+const int pinoBotao = 2; 
 const int pinoLed = 8;
 
-// --- FSM do Menu ---
+// Estados da máquina de estados
 enum Estado {
   MENU_PRINCIPAL,
   STATUS_SISTEMA,
@@ -75,7 +75,8 @@ void loop() {
     g_botaoPressionado = false;
     sei(); // Re-liga interrupções
     
-    // MUDANÇA: Lógica de debounce baseada no WDT (g_segundosDeExecucao)
+    // ATENÇÃO!!!
+    // Lógica de debounce baseada no WDT (g_segundosDeExecucao)
     // Em vez de millis().
     // Só processa o clique se tiver passado mais de 0 "ticks" do WDT
     // desde o último clique. (Debounce de 1 segundo)
@@ -98,10 +99,10 @@ void loop() {
     g_wdtDisparou = false;
     sei(); // Re-liga interrupções
     
-    // 1. Atualiza o pino do LED
+    // Atualiza o pino do LED
     digitalWrite(pinoLed, g_estadoLed);
     
-    // 2. Se estiver na tela de monitoramento, atualiza o LCD
+    // Se estiver na tela de monitoramento, atualiza o LCD
     if (estadoAtual == MONITORAMENTO) {
       lcd.setCursor(0, 1);
       lcd.print("Tempo: ");
@@ -113,8 +114,8 @@ void loop() {
     // Nenhuma flag, vamos dormir.
     sei(); // Liga interrupções ANTES de dormir
     sleep_enable();
-    sleep_cpu();    // ****** DORME AQUI ******
-    sleep_disable();  // ****** ACORDA AQUI ******
+    sleep_cpu();      // ------ DORME AQUI ------
+    sleep_disable();  // ------ ACORDA AQUI ------
   }
 }
 

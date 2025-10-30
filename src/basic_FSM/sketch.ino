@@ -26,10 +26,10 @@ void setup() {
 void loop() {
   unsigned long tempoAtual = millis();
 
-  // 1. A função que VERIFICA eventos (transições)
+  // A função que VERIFICA eventos (transições)
   verificarBotao(tempoAtual);
 
-  // 2. A função que EXECUTA o estado atual
+  // A função que EXECUTA o estado atual
   executarEstado(tempoAtual);
 }
 

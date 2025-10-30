@@ -1,7 +1,7 @@
 // --- Estrutura para agendamento de tarefas ---
 typedef struct {
-  void (*funcao)();          // Ponteiro para a função da tarefa
-  unsigned long intervalo;     // Intervalo de execução
+  void (*funcao)();             // Ponteiro para a função da tarefa
+  unsigned long intervalo;      // Intervalo de execução
   unsigned long ultimaExecucao; // Último tempo de execução 
 } Tarefa;
 
